@@ -2,6 +2,7 @@ package process;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -16,7 +17,9 @@ public class Util {
     int result = process.waitFor();
     if(result != 0) {
       StringBuilder message = new StringBuilder()
-        .append("Wrong result for nixos-version. Expected \"0\" but was \"")
+        .append("Wrong result for ")
+        .append(Arrays.toString(command))
+        .append(". Expected \"0\" but was \"")
         .append(result)
         .append("\".");
       if(!error.isBlank()) {

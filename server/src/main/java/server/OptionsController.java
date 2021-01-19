@@ -19,7 +19,7 @@ public class OptionsController {
 
   @Get("/nixos-option/{option}")
   HttpResponse<List<String>> getOptions(String option) throws IOException, InterruptedException {
-    String output = Util.execute("bash", "-c", "nixos-option", option);
+    String output = Util.execute("bash", "-c", String.format("nixos-option %s", option));
     List<String> options = List.of(output.split("\n"));
     return HttpResponse.ok(options);
   }
