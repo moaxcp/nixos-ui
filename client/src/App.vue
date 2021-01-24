@@ -2,8 +2,9 @@
   <div id="app">
     <img id="logo" alt="NixOS" src="./assets/nixos.svg" />
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/options">Options</router-link>
+      <router-link :to="{ name: 'version' }">Version</router-link> |
+      <router-link :to="{ name: 'options' }">Options</router-link> |
+      <router-link :to="{ name: 'terminal' }">Terminal</router-link>
     </div>
     <router-view/>
   </div>

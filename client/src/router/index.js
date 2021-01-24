@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Version from '../views/Version.vue'
+import NixosOption from '../views/NixosOption.vue'
+import NixosTerminal from '../views/NixosTerminal.vue'
 
 Vue.use(VueRouter)
 
@@ -11,12 +13,16 @@ const routes = [
     component: Version
   },
   {
-    path: '/options',
+    path: '/options/:option?',
     name: 'options',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "options" */ '../views/NixosOption.vue')
+    component: NixosOption,
+    props: true
+  },
+  {
+    path: '/terminal',
+    name: 'terminal',
+    component: NixosTerminal,
+    props: true
   }
 ]
 
