@@ -3,10 +3,14 @@ package process;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Consumer;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.Value;
 
 /**
@@ -14,12 +18,15 @@ import lombok.Value;
  * these streams.
  */
 public class NonBlockingProcess {
-  private ProcessBuilder builder;
+  private final ProcessBuilder builder;
+  private final boolean redirectError;
   private Process process;
   private Input processInput;
   private Output processOutput;
   private Output processError;
-  private Result processResult;
+  private EventLoop processEventLoop;
+  private ConcurrentHashMap<String, Consumer<byte[]>> outputListeners = new ConcurrentHashMap<>();
+  private ConcurrentHashMap<String, Consumer<byte[]>> errorListeners = new ConcurrentHashMap<>();
 
   private class Input implements Runnable {
 
@@ -28,12 +35,8 @@ public class NonBlockingProcess {
     private OutputStream processInput;
     @Getter
     private volatile boolean running = false;
-
     @Getter
-    @Setter
-    private volatile boolean stopped = false;
-    @Getter
-    private volatile Exception exception;
+    private volatile Throwable throwable;
 
     public Input(@NonNull OutputStream processInput) {
       this.processInput = processInput;
@@ -42,21 +45,22 @@ public class NonBlockingProcess {
     @Override
     public void run() {
       running = true;
-      while(stopped == false) {
+      while(process.isAlive()) {
         byte[] bytes = input.poll();
         if(bytes == null) {
           try {
             Thread.sleep(10);
+            continue;
           } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            exception = e;
+            throwable = e;
             break;
           }
         }
         try {
           processInput.write(bytes);
-        } catch (IOException e) {
-          exception = e;
+        } catch (Throwable e) {
+          throwable = e;
           break;
         }
       }
@@ -72,10 +76,7 @@ public class NonBlockingProcess {
     @Getter
     private volatile boolean running = false;
     @Getter
-    @Setter
-    public volatile boolean stopped = false;
-    @Getter
-    private volatile Exception exception;
+    private volatile Throwable throwable;
 
     public Output(@NonNull InputStream processOutput) {
       this.processOutput = processOutput;
@@ -84,7 +85,7 @@ public class NonBlockingProcess {
     @Override
     public void run() {
       running = true;
-      while(stopped == false) {
+      while(true) {
         byte[] bytes = new byte[256];
         int read = 0;
         try {
@@ -92,8 +93,8 @@ public class NonBlockingProcess {
           if(read == -1) {
             break;
           }
-        } catch (IOException e) {
-          exception = e;
+        } catch (Throwable e) {
+          throwable = e;
           break;
         }
         output.add(new ReadBytes(bytes, read));
@@ -102,7 +103,7 @@ public class NonBlockingProcess {
     }
   }
 
-  private class Result implements Runnable {
+  private class EventLoop implements Runnable {
 
     private Process process;
     @Getter
@@ -110,9 +111,9 @@ public class NonBlockingProcess {
     @Getter
     private volatile Integer result;
     @Getter
-    private Exception exception;
+    private Throwable throwable;
 
-    public Result(@NonNull Process process) {
+    public EventLoop(@NonNull Process process) {
       this.process = process;
     }
 
@@ -120,64 +121,120 @@ public class NonBlockingProcess {
     public void run() {
       running = true;
       try {
+        while(processInput.isRunning() || processOutput.isRunning() || processError.isRunning()) {
+          boolean hadOutput = sendOutput();
+          boolean hadError = sendError();
+          if(!(hadOutput || hadError)) {
+            Thread.sleep(10);
+          }
+        }
+        sendOutput();
+        sendError();
         result = process.waitFor();
-      } catch (InterruptedException e) {
+      } catch (Throwable e) {
         Thread.currentThread().interrupt();
-        exception = e;
+        throwable = e;
       }
       running = false;
+    }
+
+    private boolean sendOutput() {
+      boolean hadOutput = false;
+      while(!processOutput.getOutput().isEmpty()) {
+        ReadBytes bytes = processOutput.getOutput().poll();
+        if (bytes != null) {
+          hadOutput = true;
+        }
+        for (Consumer<byte[]> consumer : outputListeners.values()) {
+          consumer.accept(Arrays.copyOfRange(bytes.getBytes(), 0, bytes.getRead()));
+        }
+      }
+      return hadOutput;
+    }
+
+    private boolean sendError() {
+      boolean hadOutput = false;
+      while(!processError.getOutput().isEmpty()) {
+        ReadBytes bytes = processError.getOutput().poll();
+        if (bytes != null) {
+          hadOutput = true;
+        }
+        for (Consumer<byte[]> consumer : errorListeners.values()) {
+          consumer.accept(Arrays.copyOfRange(bytes.getBytes(), 0, bytes.getRead()));
+        }
+      }
+      return hadOutput;
     }
   }
 
   @Value
-  private class ReadBytes {
-    byte[] bytes;
-    int read;
-  }
-
-  @Value
+  @Builder
   public static class Status {
+    List<String> command;
     Integer result;
+    boolean eventLoopRunning;
+    Throwable eventLoopException;
     boolean inputRunning;
+    Throwable inputException;
     boolean outputRunning;
+    Throwable outputException;
     boolean errorRunning;
+    Throwable errorException;
   }
 
-  public ConcurrentLinkedQueue<byte[]> getInputQueue() {
-    return processInput.getInput();
-  }
-
-  public ConcurrentLinkedQueue<ReadBytes> getOutputQueue() {
-    return processOutput.getOutput();
-  }
-
-  public ConcurrentLinkedQueue<ReadBytes> getErrorQueue() {
-    return processError.getOutput();
-  }
-
-  public Integer getResult() {
-    return processResult.getResult();
-  }
-
-  public NonBlockingProcess(String... command) {
+  public NonBlockingProcess(boolean redirectError, String... command) {
+    this.redirectError = redirectError;
     builder = new ProcessBuilder(command);
   }
 
+  public void addOutputListener(String name, Consumer<byte[]> consumer) {
+    outputListeners.put(name, consumer);
+  }
+
+  public void removeOutputListener(String name) {
+    outputListeners.remove(name);
+  }
+
+  public void addErrorListener(String name, Consumer<byte[]> consumer) {
+    errorListeners.put(name, consumer);
+  }
+
+  public void removeErrorListener(String name) {
+    errorListeners.remove(name);
+  }
+
+  public void input(byte[] bytes) {
+    processInput.getInput().add(bytes);
+  }
+
   public void start() throws IOException {
+    builder.redirectErrorStream(redirectError);
     process = builder.start();
     processInput = new Input(process.getOutputStream());
     processOutput = new Output(process.getInputStream());
     processError = new Output(process.getErrorStream());
-    processResult = new Result(process);
+    processEventLoop = new EventLoop(process);
 
     new Thread(processInput).start();
     new Thread(processOutput).start();
-    new Thread(processError).start();
-    new Thread(processResult).start();
+    if(!redirectError) {
+      new Thread(processError).start();
+    }
+    new Thread(processEventLoop).start();
   }
 
   public Status status() {
-    return new Status(processResult.getResult(), processInput.isRunning(), processOutput.isRunning(), processError.isRunning());
+    return Status.builder().command(builder.command())
+    .result(processEventLoop.getResult())
+    .eventLoopRunning(processEventLoop.isRunning())
+    .eventLoopException(processEventLoop.getThrowable())
+    .inputRunning(processInput.isRunning())
+    .inputException(processInput.getThrowable())
+    .outputRunning(processOutput.isRunning())
+    .outputException(processOutput.getThrowable())
+    .errorRunning(processError.isRunning())
+    .errorException(processError.getThrowable())
+    .build();
   }
 
   public void stop() {
