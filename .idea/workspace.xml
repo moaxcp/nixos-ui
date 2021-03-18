@@ -4,13 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="60bfbab3-cdf3-4ed7-a0f2-6fc95172eab1" name="Default Changelist" comment="Adding routs. Fixed colors in navbar. options view now updates with searchTerm on enter.">
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/process/ReadBytes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/server/TerminalWebSocket.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/terminal/TerminalSocket.java" afterDir="false" />
+    <list default="true" id="60bfbab3-cdf3-4ed7-a0f2-6fc95172eab1" name="Default Changelist" comment="connecting to terminal">
+      <change afterPath="$PROJECT_DIR$/server/src/integrationTest/java/pty/NonBlockingPtyIT.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/EventLoop.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/Input.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/NonBlockingPty.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/Output.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/ReadBytes.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/Status.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/integrationTest/java/process/NonBlockingProcessIT.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/integrationTest/java/process/NonBlockingProcessIT.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/process/NonBlockingProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/process/NonBlockingProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/server/build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,16 +130,21 @@
     <property name="NIXITCH_NIX_USER_PROFILE_DIR" value="/nix/var/nix/profiles/per-user/john" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="full.screen.before.presentation.mode" value="false" />
     <property name="jdk.selected.JAVA_MODULE" value="15" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../x11-client" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
+    <property name="settings.editor.selected.configurable" value="debugger.stepping" />
   </component>
   <component name="RecentsManager">
     <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="pty" />
       <recent name="process" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="pty" />
     </key>
   </component>
   <component name="RunAnythingCache">
@@ -145,13 +153,34 @@
       <command value="gradle run --info" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.nixos-ui:server [run]">
+  <component name="RunManager" selected="Gradle.NonBlockingPtyIT.nixosVersion">
     <configuration name="NonBlockingProcessIT.nixosVersion" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" value="--tests &quot;process.NonBlockingProcessIT.nixosVersion&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":server:integrationTest" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="NonBlockingPtyIT.nixosVersion" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;pty.NonBlockingPtyIT.nixosVersion&quot;" />
         <option name="taskDescriptions">
           <list />
         </option>
@@ -179,27 +208,6 @@
         <option name="taskNames">
           <list>
             <option value="build" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
-    <configuration name="nixos-ui [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="clean" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -253,11 +261,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.NonBlockingPtyIT.nixosVersion" />
         <item itemvalue="Gradle.nixos-ui:server [run]" />
         <item itemvalue="Gradle.NonBlockingProcessIT.nixosVersion" />
         <item itemvalue="Gradle.nixos-ui [run]" />
         <item itemvalue="Gradle.nixos-ui [build]" />
-        <item itemvalue="Gradle.nixos-ui [clean]" />
       </list>
     </recent_temporary>
   </component>
@@ -284,7 +292,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611026869945</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="connecting to terminal">
+      <created>1611768835728</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1611768835728</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -302,7 +317,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Adding initial commit" />
     <MESSAGE value="Adding routs. Fixed colors in navbar. options view now updates with searchTerm on enter." />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding routs. Fixed colors in navbar. options view now updates with searchTerm on enter." />
+    <MESSAGE value="connecting to terminal" />
+    <option name="LAST_COMMIT_MESSAGE" value="connecting to terminal" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -382,7 +398,43 @@
           <line>142</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/server/src/main/java/pty/NonBlockingPty.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/server/src/main/java/pty/Output.java</url>
+          <line>24</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/server/src/main/java/pty/Output.java</url>
+          <line>25</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/server/src/main/java/pty/Output.java</url>
+          <line>26</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/server/src/main/java/pty/EventLoop.java</url>
+          <line>82</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/server/src/integrationTest/java/pty/NonBlockingPtyIT.java</url>
+          <line>13</line>
+          <properties>
+            <option name="lambda-ordinal" value="0" />
+          </properties>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/nixos_ui$NonBlockingPtyIT_nixosVersion.ic" NAME="NonBlockingPtyIT.nixosVersion Coverage Results" MODIFIED="1615251199039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>
