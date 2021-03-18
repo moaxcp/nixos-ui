@@ -10,13 +10,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import process.NonBlockingProcess;
+import pty.NonBlockingPty;
 
 @ServerWebSocket("/terminal")
 public class TerminalWebSocket {
     private WebSocketBroadcaster broadcaster;
 
-    private Map<String, NonBlockingProcess> processes = new ConcurrentHashMap<>();
+    private Map<String, NonBlockingPty> processes = new ConcurrentHashMap<>();
 
     public TerminalWebSocket(WebSocketBroadcaster broadcaster) {
       this.broadcaster = broadcaster;
@@ -24,9 +24,10 @@ public class TerminalWebSocket {
 
     @OnOpen
     public void onOpen(WebSocketSession session) throws IOException {
-        NonBlockingProcess bash = new NonBlockingProcess(true, "bash");
-        bash.start();
-        processes.put(session.getId(), bash);
+        NonBlockingPty process = new NonBlockingPty("bash");
+        process.addOutputListener(session.getId(), session::sendSync);
+        process.start();
+        processes.put(session.getId(), process);
     }
 
     @OnMessage

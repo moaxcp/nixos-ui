@@ -4,16 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="60bfbab3-cdf3-4ed7-a0f2-6fc95172eab1" name="Default Changelist" comment="connecting to terminal">
-      <change afterPath="$PROJECT_DIR$/server/src/integrationTest/java/pty/NonBlockingPtyIT.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/EventLoop.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/Input.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/NonBlockingPty.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/Output.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/ReadBytes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/server/src/main/java/pty/Status.java" afterDir="false" />
+    <list default="true" id="60bfbab3-cdf3-4ed7-a0f2-6fc95172eab1" name="Default Changelist" comment="Adding NonBlockingPty">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/server/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/pty/NonBlockingPty.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/pty/NonBlockingPty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/server/TerminalWebSocket.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/server/TerminalWebSocket.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +147,7 @@
       <command value="gradle run --info" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.NonBlockingPtyIT.nixosVersion">
+  <component name="RunManager" selected="Gradle.nixos-ui:server [run]">
     <configuration name="NonBlockingProcessIT.nixosVersion" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -261,10 +255,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.NonBlockingPtyIT.nixosVersion" />
         <item itemvalue="Gradle.nixos-ui:server [run]" />
-        <item itemvalue="Gradle.NonBlockingProcessIT.nixosVersion" />
         <item itemvalue="Gradle.nixos-ui [run]" />
+        <item itemvalue="Gradle.NonBlockingPtyIT.nixosVersion" />
+        <item itemvalue="Gradle.NonBlockingProcessIT.nixosVersion" />
         <item itemvalue="Gradle.nixos-ui [build]" />
       </list>
     </recent_temporary>
@@ -299,7 +293,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611768835728</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Adding NonBlockingPty">
+      <created>1616086537511</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1616086537511</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -318,7 +319,8 @@
     <MESSAGE value="Adding initial commit" />
     <MESSAGE value="Adding routs. Fixed colors in navbar. options view now updates with searchTerm on enter." />
     <MESSAGE value="connecting to terminal" />
-    <option name="LAST_COMMIT_MESSAGE" value="connecting to terminal" />
+    <MESSAGE value="Adding NonBlockingPty" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding NonBlockingPty" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

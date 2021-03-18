@@ -86,4 +86,12 @@ public class NonBlockingPty {
       .errorException(error.getThrowable())
       .build();
   }
+
+  public void stop() {
+    process.destroy();
+  }
+
+  public void input(byte[] bytes) {
+    input.getInput().add(bytes);
+  }
 }
